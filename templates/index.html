@@ -3,7 +3,7 @@
 {%block content%}
 <p>{{movies|length}} Titles</p>
 <ul class="movie-list">
-    {%for movie in movie-list%}
+    {%for movie in movies%}
     <li>{{movie.title}}-{{movie.year}}
         <span class="float-right">
             <a class="imdb" href="https://www.imdb.com/find?q={{movie.title}}"></a>
@@ -11,5 +11,5 @@
     </li>
     {%endfor%}
 </ul>
-<img alt="sakura" class="sakura" src="url_for('static',filename='images/sakura.jpg')" title="sa~ku~ra~">    
+<img alt="sakura" class="sakura" src="{{url_for('static',filename='images/sakura.jpg')}}" title="sa~ku~ra~">    
 {%endblock%}
