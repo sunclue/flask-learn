@@ -4,14 +4,14 @@ from flask_login import login_required,logout_user
 from flask_login import current_user
 
 from watchlist import app,db
-from watchlist.models import User,Movie
+from watchlist.models import User,Movie,Message
 
 @app.route('/',methods=['GET','POST'])
 def index():
     if request.method=='POST':
         if not current_user.is_authenticated:
             return redirect(url_for('index'))
-        title=request.form.get('title') #»ñÈ¡form±êÇ©µÄnameÖµ
+        title=request.form.get('title') #è·å–formæ ‡ç­¾çš„nameå€¼
         year=request.form.get('year')
         if not title or not year or len(year)>4 or len(title)>60:
             flash('Invalid input.')
@@ -75,7 +75,7 @@ def login():
     return render_template('login.html')
 
 @app.route('/logout')
-@login_required #ÓÃÓÚÊÓÍ¼±£»¤
+@login_required #ç”¨äºè§†å›¾ä¿æŠ¤
 def logout():
     logout_user()
     flash('Goodbye')
@@ -91,9 +91,33 @@ def settings():
             flash('Invalid input.')
             return redirect(url_for('settings'))
         
-        current_user.name=name  # current_user»á·µ»Øµ±Ç°µÇÂ¼ÓÃ»§µÄÊı¾İ¿â¼ÇÂ¼¶ÔÏó
+        current_user.name=name  # current_userä¼šè¿”å›å½“å‰ç™»å½•ç”¨æˆ·çš„æ•°æ®åº“è®°å½•å¯¹è±¡
         db.session.commit()
         flash('Settings updated.')
         return redirect(url_for('index'))
     
     return render_template('settings.html')
+
+@app.route('/messages',methods=['GET','POST'])
+def messages():
+    if request.method=='POST':
+        name=request.form['name']
+        message=request.form['message']
+
+        if not name or not message or len(name)>20 or len(message)>256:
+            flash('Invalid input')
+            return redirect(url_for('messages'))
+        
+        authenticatemessage=request.form['authenticate']
+        if authenticatemessage!='å®å¡”é•‡æ²³å¦–':
+            flash('è¯·è¾“å…¥éªŒè¯å£ä»¤ï¼šå®å¡”é•‡æ²³å¦–')
+            return redirect(url_for('messages'))
+        
+        onemessage=Message(name=name,message=message)
+        db.session.add(onemessage)
+        db.session.commit()
+        flash('Message sent.')
+        return redirect(url_for('messages'))
+    
+    messages=Message.query.all()
+    return render_template('messages.html',messages=messages)

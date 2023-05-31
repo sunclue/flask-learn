@@ -12,17 +12,17 @@ else:
     prefix='sqlite:////'
 
 app=Flask(__name__)
-#设置数据库连接地址
+#璁剧疆鏁版嵁搴撹繛鎺ュ湴鍧�
 app.config['SQLALCHEMY_DATABASE_URI']=prefix+os.path.join(os.path.dirname(app.root_path),os.getenv('DATABASE_FILE','data.db'))
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False  # 关闭对模型修改的监控
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False  # 鍏抽棴瀵规ā鍨嬩慨鏀圭殑鐩戞帶
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY','dev')
 
-db=SQLAlchemy(app)      # 初始化扩展，导入程序实例
+db=SQLAlchemy(app)      # 鍒濆鍖栨墿灞曪紝瀵煎叆绋嬪簭瀹炰緥
 login_manager=LoginManager(app)
 
 
 @login_manager.user_loader
-def user_loader(user_id):   #创建用户加载回调函数，接受用户ID作为参数
+def user_loader(user_id):   #鍒涘缓鐢ㄦ埛鍔犺浇鍥炶皟鍑芥暟锛屾帴鍙楃敤鎴稩D浣滀负鍙傛暟
     from watchlist.models import User
     user=User.query.get(int(user_id))
     return user

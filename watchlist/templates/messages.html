@@ -1,0 +1,19 @@
+{%extends 'base.html'%}
+{%block content%}
+<h3>Message Board</h3>
+<form method="post">
+    Name<br>
+    <input type="text" name="name" required><br>
+    Message<br>
+    <input type="text" name="message" required><br>
+    天王盖地虎<br>
+    <input type="text" name="authenticate" required><br> 
+    <input class="btn" type="submit" required>
+</form>
+<ul class="message-list">
+    {%for message in messages%}
+    <li>{{message.name}}:<br>{{message.message}}</li>
+    {%endfor%}
+</ul>
+
+{%endblock%}
