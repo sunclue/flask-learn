@@ -12,10 +12,16 @@ from flask_login import current_user
 
 app=Flask(__name__)
 
+WIN=sys.platform.startswith('win')
+if WIN:
+    prefix='sqlite:///'
+else:
+    prefix='sqlite:////'
+
 #设置数据库连接地址
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///'+os.path.join(app.root_path,'data.db')
+app.config['SQLALCHEMY_DATABASE_URI']=prefix+os.path.join(os.path.dirname(app.root_path),os.getenv('DATABASE_FILE','data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False  # 关闭对模型修改的监控
-app.config['SECRET_KEY'] = 'dev'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY','dev')
 
 db=SQLAlchemy(app)      # 初始化扩展，导入程序实例
 login_manager=LoginManager(app)
